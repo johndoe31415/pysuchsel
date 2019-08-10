@@ -154,8 +154,9 @@ class Suchsel():
 				# like there
 				return False
 
-			if present is None:
-				# Field is empty, check adjacent fields for emptyness
+			if (present is None) and (crossword_marker is not None):
+				# Field is empty, check adjacent fields for emptyness if this
+				# is a crossword
 				for (adjx, adjy) in self._adjacent_fields(x, y, rule):
 					adjacent_content = self._grid.get((adjx, adjy))
 					if (adjacent_content is not None) and not isinstance(adjacent_content, VoidPlaceholder):
