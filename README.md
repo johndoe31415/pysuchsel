@@ -1,16 +1,20 @@
 # pysuchsel
 pysuchsel is a program to create "Suchsel" word puzzles (i.e., a rectangular
-array of letters which have words hidden within that you need to find). From a
-given word list and grid size and filling rules, it creates an SVG image that
-can easily printed. 
+array of letters which have words hidden within that you need to find, aka
+"word search"). It can also create crossword puzzles. For both, from a given
+word list, grid size and filling rules, it creates an SVG image that can easily
+printed.
 
-It can fill all the void spaces with random letters that are uniformly
-distributed or it can choose a random distribution that satisfies a natural
-language (German and English are supported), making the Suchsel much more
-difficult. It also supports hiding words left-to-right, right-to-left,
+For Suchsels, it can fill all the void spaces with random letters that are
+uniformly distributed or it can choose a random distribution that satisfies a
+natural language (German and English are supported), making the Suchsel much
+more difficult. It also supports hiding words left-to-right, right-to-left,
 top-to-bottom, bottom-to-top, diagonally-to-top-right, diagonally-to-top-left,
 diagonally-to-bottom-right, diagonally-to-bottom-left or any combination of
 these placements.
+
+For crossword puzzles, it takes care there is not adjacent cells filled, it
+enumerates the words and creates number fields in the resulting SVG.
 
 ## Usage
 You'll first have to create a file that contains all the words (e.g., using
@@ -239,6 +243,92 @@ This is how a PNG rendering then looks like:
 
 ![Paddelfisch Suchsel](https://raw.githubusercontent.com/johndoe31415/pysuchsel/master/docs/my_first_suchsel.png)
 
+For crossword mode, you can specify the "--mode=crossword" option. Let's say we
+add a few more words to our list:
+
+```
+$ cat words.txt
+SUCHSEL
+PADDELFISCH
+KREUZWORT
+FLUGZEUG
+XYLOPHON
+```
+
+Then, try to create a crossword:
+
+```
+$ ./pysuchsel -v --mode=crossword words.txt my_first_crossword.svg
+Warning: could not place word "FLUGZEUG".
+Warning: could not place word "KREUZWORT".
+ 1: PADDELFISCH
+ 2: SUCHSEL
+ 3: XYLOPHON
++--------------------------------+
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|                                |
+|             v                  |
+|             P                  |
+|             A                  |
+|             D     v            |
+|             D     X            |
+|             E     Y            |
+|             L     L            |
+|             F     O            |
+|             I     P            |
+|           > S U C H S E L .    |
+|             C     O            |
+|             H     N            |
+|             .     .            |
+|                                |
++--------------------------------+
+```
+
+You'll notice that it was not possible to place all words. You can ask
+pysuchsel to re-attempt until it finds a solution that places all words by
+specifying the "-a" (or --creation-attempts) parameter:
+
+```
+$ ./pysuchsel -v --mode=crossword -a 50 words.txt my_first_crossword.svg
+ 1: KREUZWORT
+ 2: XYLOPHON
+ 3: PADDELFISCH
+ 4: SUCHSEL
+ 5: FLUGZEUG
++--------------------------------+
+|                                |
+|                                |
+|                                |
+|                                |
+|                         v      |
+|               v         S      |
+|               X         U      |
+|               Y         C      |
+|   > P A D D E L F I S C H .    |
+|         v     O         S      |
+|         F     P         E      |
+|         L     H         L      |
+| > K R E U Z W O R T .   .      |
+|         G     N                |
+|         Z     .                |
+|         E                      |
+|         U                      |
+|         G                      |
+|         .                      |
+|                                |
++--------------------------------+
+```
+
+The rendering of this now looks like this:
+
+![Paddelfisch Crossword](https://raw.githubusercontent.com/johndoe31415/pysuchsel/master/docs/my_first_crossword.png)
+
+Note that you can also specify the "--empty" parameter if you don't want the
+letters to be filled into the SVG.
 
 ## License
 GNU-GPL 3.
