@@ -16,7 +16,7 @@ these placements.
 For crossword puzzles, it takes care there is not adjacent cells filled, it
 enumerates the words and creates number fields in the resulting SVG.
 
-## Usage
+## Suchsel mode
 You'll first have to create a file that contains all the words (e.g., using
 pluma or vim). We'll call it words.txt
 
@@ -26,16 +26,17 @@ SUCHSEL
 PADDELFISCH
 ```
 
-Our file only contains two words. Then, you can already call pysuchsel to place them:
+Our file only contains two words. Then, you can already call pysuchsel to place
+them into a Suchsel puzzle:
 
 ```
-$ ./pysuchsel words.txt my_first_suchsel.svg
+$ ./pysuchsel suchsel words.txt my_first_suchsel.svg
 ```
 
 If you want to see where they were placed, specify "-v" as well:
 
 ```
-$ ./pysuchsel -v words.txt my_first_suchsel.svg
+$ ./pysuchsel suchsel -v words.txt my_first_suchsel.svg
 +--------------------------------+
 |                                |
 |                                |
@@ -63,7 +64,7 @@ $ ./pysuchsel -v words.txt my_first_suchsel.svg
 You can influence the size with the "-x" and "-y" options:
 
 ```
-$ ./pysuchsel -x 11 -y 11 -v words.txt my_first_suchsel.svg
+$ ./pysuchsel suchsel -x 11 -y 11 -v words.txt my_first_suchsel.svg
 +------------------------+
 | P                      |
 | A                      |
@@ -83,7 +84,7 @@ You can also specify that you'd like words to share letters, which is then
 going to be the preference:
 
 ```
-$ ./pysuchsel -c -x 11 -y 11 -v words.txt my_first_suchsel.svg
+$ ./pysuchsel suchsel -c -x 11 -y 11 -v words.txt my_first_suchsel.svg
 +------------------------+
 |                   P    |
 |                   A    |
@@ -103,7 +104,7 @@ When you specify "--verbose" twice, it'll also show how the padded Suchsel
 looks like on the command line:
 
 ```
-$ ./pysuchsel -c -x 11 -y 11 -vv words.txt my_first_suchsel.svg
+$ ./pysuchsel suchsel -c -x 11 -y 11 -vv words.txt my_first_suchsel.svg
 +------------------------+
 |                        |
 |                        |
@@ -136,7 +137,7 @@ To specify placement, use the "-p" command line option. For example, to only
 create diagonal placement to the bottom right, do:
 
 ```
-$ ./pysuchsel -x 11 -y 11 -p dbr -v words.txt my_first_suchsel.svg
+$ ./pysuchsel suchsel -x 11 -y 11 -p dbr -v words.txt my_first_suchsel.svg
 +------------------------+
 | P     S                |
 |   A     U              |
@@ -156,7 +157,7 @@ To allow more than one placement method, specify them all. For example, only
 allow top-to-bottom and bottom-to-top:
 
 ```
-$ ./pysuchsel -x 11 -y 11 -p tb -p bt -v words.txt my_first_suchsel.svg
+$ ./pysuchsel suchsel -x 11 -y 11 -p tb -p bt -v words.txt my_first_suchsel.svg
 +------------------------+
 |         S       H      |
 |         U       C      |
@@ -172,13 +173,14 @@ $ ./pysuchsel -x 11 -y 11 -p tb -p bt -v words.txt my_first_suchsel.svg
 +------------------------+
 ```
 
-To influence the padding of letters, look at the "-d" option. By default,
-padded letters are uniformly distributed (i.e., each letter has the same
-probability of occurrence). That makes uncommon letters (e.g., Q and Y in the
-German language) rather frequent and stand out. For example:
+To influence the padding of letters, look at the "--fill-rule" option. By
+default, padded letters are placed in natural language distribution of English
+(i.e., each letter has the same probability of occurrence and only A-Z are
+placed). That makes uncommon letters (e.g., Q and Y in the German language)
+rather frequent not stand out. For example:
 
 ```
-$ ./pysuchsel -x 5 -y 11 -vv words.txt my_first_suchsel.svg
+$ ./pysuchsel suchsel -x 5 -y 11 -vv words.txt my_first_suchsel.svg
 +------------+
 | P          |
 | A          |
@@ -193,58 +195,141 @@ $ ./pysuchsel -x 5 -y 11 -vv words.txt my_first_suchsel.svg
 | H          |
 +------------+
 +------------+
-| P L I B Q  |
-| A H J E D  |
-| D O H F Q  |
-| D S L B G  |
-| E U C K L  |
-| L C J I I  |
-| F H O K I  |
-| I S S G A  |
-| S E D X X  |
-| C L K E K  |
-| H S I L Q  |
+| P A L S I  |
+| A L U T T  |
+| D R W N H  |
+| D S E N R  |
+| E U T N T  |
+| L C S I W  |
+| F H D E D  |
+| I S N S E  |
+| S E E A R  |
+| C L S A W  |
+| H E T E A  |
 +------------+
 ```
 
-Compare that to:
+You can now first switch to German language, which will include more letters
+and choose the German language distribution:
 
 ```
-$ ./pysuchsel -x 5 -y 11 -d natlang-de -vv words.txt my_first_suchsel.svg
+$ ./pysuchsel suchsel -f de -x 5 -y 11 -vv words.txt my_first_suchsel.svg
 +------------+
-|   P        |
-|   A        |
-|   D        |
-|   D        |
-|   E   S    |
-|   L   U    |
-|   F   C    |
-|   I   H    |
-|   S   S    |
+|       P    |
+|       A    |
+|   S   D    |
+|   U   D    |
 |   C   E    |
 |   H   L    |
+|   S   F    |
+|   E   I    |
+|   L   S    |
+|       C    |
+|       H    |
 +------------+
 +------------+
-| D P C W D  |
-| R A S L F  |
-| S D T U E  |
-| Z D V N C  |
-| S E H S K  |
-| I L N U N  |
-| W F K C S  |
-| G I N H H  |
-| A S N S T  |
-| G C T E N  |
-| N H U L E  |
+| L D B P S  |
+| S E N A F  |
+| I S D D E  |
+| E U B D P  |
+| Ä C D E R  |
+| I H N L I  |
+| A S V F S  |
+| T E N I B  |
+| L L P S G  |
+| L S N C R  |
+| U N T H G  |
 +------------+
+```
+
+You'll see that German letters are placed as fillers (e..g, note the "Ä"), but
+it only occurs once (because its character frequency in German language is
+comparatively low). Now compare that to:
+
+```
+$ ./pysuchsel suchsel -f de --uniform-distribution -x 5 -y 11 -vv words.txt my_first_suchsel.svg
++------------+
+|     P      |
+|     A   S  |
+|     D   U  |
+|     D   C  |
+|     E   H  |
+|     L   S  |
+|     F   E  |
+|     I   L  |
+|     S      |
+|     C      |
+|     H      |
++------------+
++------------+
+| V J P D B  |
+| T G A R S  |
+| X S D B U  |
+| I M D H C  |
+| N N E P H  |
+| E H L A S  |
+| Z A F Ö E  |
+| W J I ß L  |
+| W O S Z B  |
+| T G C V Ä  |
+| P Ö H C V  |
++------------+
+```
+
+Where you'll see many more "Ä", "Ö", "Ü"s.
+
+You can also generate not only the puzzle itself, but also the solution for the puzzle by specifying the "-s" option:
+
+```
+$ ./pysuchsel suchsel -f de -x 15 -y 15 -s solution.svg -vv words.txt my_first_suchsel.svg
++--------------------------------+
+|                                |
+|                       P        |
+|                       A        |
+|                       D        |
+|                       D        |
+|                       E        |
+|                       L        |
+|                       F        |
+|                       I        |
+|   S U C H S E L       S        |
+|                       C        |
+|                       H        |
+|                                |
+|                                |
+|                                |
++--------------------------------+
++--------------------------------+
+| Ü E N N D H C I R E T L H D M  |
+| Ö S N E N A E N I M R P S S N  |
+| I N Ä W A A I N T E M A E N R  |
+| E O K R I V B E Z B R D Z A N  |
+| G Ü I H E M E E L E L D B E L  |
+| R T N T W N C R L H E E F Q F  |
+| A G T A H F G G R Z A L S L U  |
+| P E Ü I C G T R E F T F E E E  |
+| E O N A S T D A R R E I F E E  |
+| H S U C H S E L I A G S O F S  |
+| S E I A R N R T N N T C N I B  |
+| E S E U A G D E N D U H E R G  |
+| S F E W E R U B R L E A O E E  |
+| D E I N B E R H Ü B B E C O E  |
+| I R H D T A R I F E S M N E S  |
++--------------------------------+
 ```
 
 This is how a PNG rendering then looks like:
 
 ![Paddelfisch Suchsel](https://raw.githubusercontent.com/johndoe31415/pysuchsel/master/docs/my_first_suchsel.png)
 
-For crossword mode, you can specify the "--mode=crossword" option. Let's say we
-add a few more words to our list:
+And this is how the solution PNG looks like:
+
+![Paddelfisch Suchsel](https://raw.githubusercontent.com/johndoe31415/pysuchsel/master/docs/solution.png)
+
+
+## Crossword Mode
+For crossword mode, you need to use "pysuchsel crossword" instead of "pysuchsel
+suchsel". Let's say we add a few more words to our list:
 
 ```
 $ cat words.txt
@@ -258,7 +343,7 @@ XYLOPHON
 Then, try to create a crossword:
 
 ```
-$ ./pysuchsel -v --mode=crossword words.txt my_first_crossword.svg
+$ ./pysuchsel crossword -v words.txt my_first_crossword.svg
 Warning: could not place word "FLUGZEUG".
 Warning: could not place word "KREUZWORT".
  1: PADDELFISCH
@@ -293,7 +378,7 @@ pysuchsel to re-attempt until it finds a solution that places all words by
 specifying the "-a" (or --creation-attempts) parameter:
 
 ```
-$ ./pysuchsel -v --mode=crossword -a 50 words.txt my_first_crossword.svg
+$ ./pysuchsel crossword -v -a 50 words.txt my_first_crossword.svg
  1: KREUZWORT
  2: XYLOPHON
  3: PADDELFISCH
@@ -326,9 +411,6 @@ $ ./pysuchsel -v --mode=crossword -a 50 words.txt my_first_crossword.svg
 The rendering of this now looks like this:
 
 ![Paddelfisch Crossword](https://raw.githubusercontent.com/johndoe31415/pysuchsel/master/docs/my_first_crossword.png)
-
-Note that you can also specify the "--empty" parameter if you don't want the
-letters to be filled into the SVG.
 
 ## License
 GNU-GPL 3.

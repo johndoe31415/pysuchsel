@@ -71,7 +71,7 @@ class SVGDocument():
 		self._updatedim(x, y, width, height)
 		style = {
 			"fill":				"#" + kwargs.get("fillcolor", "000000"),
-			"fill-opacity":		str(kwargs.get("fillopacity", 0)),
+			"fill-opacity":		str(kwargs.get("fillopacity", "0" if "fillcolor" not in kwargs else "1")),
 			"stroke":			"#" + kwargs.get("strokecolor", "000000"),
 			"stroke-width":		str(kwargs.get("strokewidth", "1")),
 		}
@@ -96,7 +96,7 @@ class SVGDocument():
 			"font-size":		str(fontkwargs.get("fontsize", 12)) + "px",
 			"font-style":		"normal",
 			"font-variant":		"normal",
-			"font-weight":		"normal",
+			"font-weight":		fontkwargs.get("font_weight", "normal"),
 			"font-stretch":		"normal",
 			"fill":				"#" + fontkwargs.get("color", "000000"),
 		}

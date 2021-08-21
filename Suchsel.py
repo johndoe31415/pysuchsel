@@ -55,6 +55,7 @@ class Suchsel():
 		self._placement = placement
 		self._attempts = attempts
 		self._grid = { }
+		self._fillers_at = set()
 
 	def _rulerange(self, origin_x, origin_y, rulename):
 		(x, y) = (origin_x, origin_y)
@@ -196,6 +197,7 @@ class Suchsel():
 				pos = (x, y)
 				if pos not in self._grid:
 					self._grid[pos] = filler.get()
+					self._fillers_at.add(pos)
 
 	def dump(self):
 		print("+-" + "-" * (2 * self._width) + "-+")
@@ -207,17 +209,24 @@ class Suchsel():
 			print("| " + (" ".join(line)) + "  |")
 		print("+-" + ("-" * (2 * self._width)) + "-+")
 
-	def write_svg(self, output_filename, place_letters = True):
+	def write_svg(self, output_filename, solution = False, fill_letters = True):
 		svg = SVGDocument()
 		size = 20
 		for y in range(self._height):
 			for x in range(self._width):
 				pos = (x, y)
 				letter = self._grid.get(pos)
+				is_filler = pos in self._fillers_at
 				if isinstance(letter, str):
-					svg.rect(size * x, size * y, size, size)
-					if place_letters:
-						svg.textregion(size * x, size * y + 4, size, size, letter, halign = "center")
+					if solution and (not is_filler):
+						# Bold font and background color for the solution
+						svg.rect(size * x, size * y, size, size, fillcolor = "f1c40f")
+						if fill_letters:
+							svg.textregion(size * x, size * y + 4, size, size, letter, halign = "center", font_weight = "bold")
+					else:
+						svg.rect(size * x, size * y, size, size)
+						if fill_letters:
+							svg.textregion(size * x, size * y + 4, size, size, letter, halign = "center")
 				elif isinstance(letter, ArrowMarker):
 					svg.rect(size * x, size * y, size, size, strokecolor = "3498db")
 					svg.textregion(size * x, size * y + 4, size, size, str(letter.marking), halign = "center")

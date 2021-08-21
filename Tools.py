@@ -1,5 +1,5 @@
 #	pysuchsel - Create Suchsel word puzzles from Python
-#	Copyright (C) 2019-2019 Johannes Bauer
+#	Copyright (C) 2019-2021 Johannes Bauer
 #
 #	This file is part of pysuchsel.
 #
@@ -18,20 +18,18 @@
 #
 #	Johannes Bauer <JohannesBauer@gmx.de>
 
-import json
-import string
-from RandomDist import RandomDist
+import random
 
-class Alphabet():
-	def __init__(self, language, uniform_distribution = False):
-		with open("distributions.json") as f:
-			distributions = json.load(f)
-		distribution = distributions[language]
-
-		if uniform_distribution:
-			self._dist = RandomDist({ letter: 1 for letter in distribution.keys() })
-		else:
-			self._dist = RandomDist({ letter: round(10000 * probability) for (letter, probability) in distribution.items() })
-
-	def get(self):
-		return self._dist.event()
+class Tools():
+	@classmethod
+	def read_file(cls, filename, shuffle = False):
+		words = [ ]
+		with open(filename) as f:
+			for line in f:
+				line = line.strip(" \t\r\n")
+				if line.startswith("#") or line == "":
+					continue
+				words.append(line.upper())
+		if shuffle:
+			random.shuffle(words)
+		return words
