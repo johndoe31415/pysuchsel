@@ -412,5 +412,29 @@ The rendering of this now looks like this:
 
 ![Paddelfisch Crossword](https://raw.githubusercontent.com/johndoe31415/pysuchsel/master/docs/my_first_crossword.png)
 
+## Solution Word Puzzle
+Out of the word list, there can also be a puzzle be created that leads to a
+specific solution word. This is called the "solution word" mode. For it to
+work, you'll need a word list and specify the output word that you want to
+create. pysuchsel will tell you if you have enough words to create that puzzle.
+For example, you can do this:
+
+```
+$ ./pysuchsel solword -v -s solution.svg words.txt solword.svg ITZI
+           #
+ 1  PADDELFISCH
+ 2 KREUZWORT
+ 3     FLUGZEUG
+ 4        MIRABELLE
+```
+
+This will create two files, one for the puzzle ("solword.svg") and the other
+for the solution ("solution.svg").  Here's how they look:
+
+![Paddelfisch Solution Word](https://raw.githubusercontent.com/johndoe31415/pysuchsel/master/docs/solword.png)
+
+![Paddelfisch Solution Word](https://raw.githubusercontent.com/johndoe31415/pysuchsel/master/docs/solword_solution.png)
+
+
 ## License
 GNU-GPL 3.
