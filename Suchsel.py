@@ -232,7 +232,4 @@ class Suchsel():
 					svg.textregion(size * x, size * y + 4, size, size, str(letter.marking), halign = "center")
 
 		svg.autosize()
-		with open(output_filename, "w") as f:
-			svg.write(f)
-
-
+		svg.writefile(output_filename)

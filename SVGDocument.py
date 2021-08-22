@@ -18,14 +18,14 @@
 #
 #	Johannes Bauer <JohannesBauer@gmx.de>
 
-import io
-
-from XMLParser import XMLNode
+import xml.dom.minidom
+from XMLTools import XMLTools
 
 class SVGDocument():
 	def __init__(self, **kwargs):
 		self._counters = { }
-		self._xml = XMLNode("svg", {
+		self._root = xml.dom.minidom.Document()
+		self._svg = XMLTools.createElement(self._root, "svg", {
 			"xmlns":			"http://www.w3.org/2000/svg",
 			"xmlns:svg":		"http://www.w3.org/2000/svg",
 			"xmlns:rdf":		"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
@@ -36,25 +36,28 @@ class SVGDocument():
 			"width":			str(kwargs.get("width", 100)),
 			"height":			str(kwargs.get("height", 100)),
 		})
-		self._ctr = 0
-		self._dimensions = {
-			"minx":		0,
-			"maxx":		0,
-			"miny":		0,
-			"maxy":		0,
-		}
+		self._dimensions = { }
 
-	def setwidth(self, width):
-		self._xml["width"] = str(width)
+	@property
+	def width(self):
+		return float(self._svg.getAttribute("width"))
 
-	def setheight(self, height):
-		self._xml["height"] = str(height)
+	@width.setter
+	def width(self, value):
+		self._svg.setAttribute("width", str(value))
 
-	def getwidth(self):
-		return float(self._xml["width"])
+	@property
+	def height(self):
+		return float(self._svg.getAttribute("height"))
 
-	def getheight(self):
-		return float(self._xml["height"])
+	@height.setter
+	def height(self, value):
+		self._svg.setAttribute("height", str(value))
+
+	def _check_kwargs(self, kwargs, allowed_kwargs):
+		excess_args = set(kwargs) - allowed_kwargs
+		if len(excess_args) > 0:
+			raise ValueError("Unknown kwarg supplied: %s" % (", ".join(sorted(excess_args))))
 
 	def _getnewid(self, start):
 		idname = start + str(self._counters.get(start, 0))
@@ -62,12 +65,25 @@ class SVGDocument():
 		return idname
 
 	def _updatedim(self, x, y, width, height):
-		self._dimensions["minx"] = min(self._dimensions["minx"], x)
-		self._dimensions["maxx"] = max(self._dimensions["maxx"], x + width)
-		self._dimensions["miny"] = min(self._dimensions["miny"], y)
-		self._dimensions["maxy"] = max(self._dimensions["maxy"], y + height)
+		if "minx" in self._dimensions:
+			self._dimensions["minx"] = min(self._dimensions["minx"], x)
+		else:
+			self._dimensions["minx"] = x
+		if "maxx" in self._dimensions:
+			self._dimensions["maxx"] = max(self._dimensions["maxx"], x + width)
+		else:
+			self._dimensions["maxx"] = x + width
+		if "miny" in self._dimensions:
+			self._dimensions["miny"] = min(self._dimensions["miny"], y)
+		else:
+			self._dimensions["miny"] = y
+		if "maxy" in self._dimensions:
+			self._dimensions["maxy"] = max(self._dimensions["maxy"], y + height)
+		else:
+			self._dimensions["maxy"] = y + height
 
 	def rect(self, x, y, width, height, **kwargs):
+		self._check_kwargs(kwargs, set([ "fill", "fillopacity", "fillcolor", "strokecolor", "stokewidth", "parent" ]))
 		self._updatedim(x, y, width, height)
 		style = {
 			"fill":				"#" + kwargs.get("fillcolor", "000000"),
@@ -84,7 +100,7 @@ class SVGDocument():
 			"height":	str(height),
 			"style":	stylestr,
 		}
-		node = kwargs.get("parent", self._xml).addchild(XMLNode("rect", attrs))
+		node = XMLTools.createElement(kwargs.get("parent", self._svg), "rect", attrs)
 		return node
 
 	def _encodestyle(styledict):
@@ -103,18 +119,20 @@ class SVGDocument():
 		return SVGDocument._encodestyle(styledict)
 
 	def text(self, x, y, text, **kwargs):
+		self._check_kwargs(kwargs, set([ "font", "fontsize", "font_weight", "color", "parent" ]))
 		attrs = {
 			"id": 		self._getnewid("text"),
 			"x":		str(x),
 			"y":		str(y),
 			"style":	SVGDocument._encodefontstyle(kwargs),
 		}
-		node = kwargs.get("parent", self._xml).addchild(XMLNode("text", attrs))
-		tspan = node.addchild(XMLNode("tspan"))
-		tspan.appendcdata(text)
+		node = XMLTools.createElement(kwargs.get("parent", self._svg), "text", attrs)
+		tspan = XMLTools.createElement(node, "tspan")
+		XMLTools.createText(tspan, text)
 		return node
 
 	def textregion(self, x, y, width, height, text, **kwargs):
+		self._check_kwargs(kwargs, set([ "font", "fontsize", "font_weight", "color", "parent", "halign" ]))
 		attrs = {
 			"id": 		self._getnewid("flowRoot"),
 			"x":		str(x),
@@ -126,33 +144,44 @@ class SVGDocument():
 				"text-anchor":	"middle",
 				"text-align":	kwargs["halign"],
 			})
-		node = kwargs.get("parent", self._xml).addchild(XMLNode("flowRoot", attrs))
+		flowRoot = XMLTools.createElement(kwargs.get("parent", self._svg), "flowRoot", attrs)
+		flowRegion = XMLTools.createElement(flowRoot, "flowRegion", { "id": self._getnewid("flowRegion") })
+		self.rect(x, y, width, height, parent = flowRegion)
 
-		region = node.addchild(XMLNode("flowRegion", { "id": self._getnewid("flowRegion") }))
-		self.rect(x, y, width, height, parent = region)
-
-		para = node.addchild(XMLNode("flowPara", { "id": self._getnewid("flowPara") }))
-		para.appendcdata(text)
-
-		return node
+		flowPara = XMLTools.createElement(flowRoot, "flowPara", { "id": self._getnewid("flowPara") })
+		XMLTools.createText(flowPara, text)
+		return flowRoot
 
 	def autosize(self):
-		self._xml["width"] = str(self._dimensions["maxx"] - self._dimensions["minx"])
-		self._xml["height"] = str(self._dimensions["maxy"] - self._dimensions["miny"])
+		def _translate(element):
+			element.setAttribute("x", str(float(element.getAttribute("x")) - self._dimensions["minx"]))
+			element.setAttribute("y", str(float(element.getAttribute("y")) - self._dimensions["miny"]))
 
-	def write(self, f):
-		self._xml.write(f)
+		for element in self._svg.childNodes:
+			if (element.nodeType == element.ELEMENT_NODE) and (element.tagName in [ "rect", "text", "flowRoot" ]):
+				_translate(element)
+				if element.tagName == "flowRoot":
+					_translate(XMLTools.getChild(element, "flowRegion", "rect"))
+		self.width = self._dimensions["maxx"] - self._dimensions["minx"]
+		self.height = self._dimensions["maxy"] - self._dimensions["miny"]
+		self._dimensions = {
+			"minx":		0,
+			"miny":		0,
+			"maxx":		self.width,
+			"maxy":		self.height,
+		}
 
-	def getxmltext(self):
-		f = io.StringIO()
-		self.write(f)
-		return f.getvalue()
+	def writefile(self, filename):
+		with open(filename, "w") as f:
+			f.write(self._root.toprettyxml())
 
 if __name__ == "__main__":
 	svg = SVGDocument()
-#	svg.rect(0, 0, 10, 15)
-#	svg.rect(-100, -100, 10, 15)
-	svg.rect(100, 100, 10, 15)
+	svg.rect(0, 0, 10, 15)
+	svg.rect(-100, -100, 10, 15)
+	svg.rect(50, 100, 10, 15)
+	svg.text(0, 0, "0, 0")
+	svg.textregion(20, 20, 50, 50, "foo bar")
 	svg.autosize()
-	svg.write(open("x.svg", "w"))
+	svg.writefile("x.svg")
 

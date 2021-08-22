@@ -83,8 +83,7 @@ class SolutionWordPuzzle():
 					svg.textregion(size * x, size * y + 4, size, size, letter, halign = "center", font_weight = "bold" if (x == 0) else "normal")
 
 		svg.autosize()
-		with open(output_filename, "w") as f:
-			svg.write(f)
+		svg.writefile(output_filename)
 
 
 if __name__ == "__main__":
