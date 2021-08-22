@@ -150,7 +150,9 @@ class SVGDocument():
 
 if __name__ == "__main__":
 	svg = SVGDocument()
-	svg.rect(0, 0, 10, 15)
+#	svg.rect(0, 0, 10, 15)
+#	svg.rect(-100, -100, 10, 15)
+	svg.rect(100, 100, 10, 15)
 	svg.autosize()
 	svg.write(open("x.svg", "w"))
 
