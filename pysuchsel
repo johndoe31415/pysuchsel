@@ -53,7 +53,7 @@ def genparser(parser):
 mc.register("solword", "Create a solution word puzzle", genparser, action = ActionSolutionWord)
 
 def genparser(parser):
-	parser.add_argument("-a", "--alphabet", choices = [ "alpha", "math" ], action = "append", default = [ ], help = "Name of the ciphertext alphabet(s) to use. Can be specified multiple times, can be any of %(choices)s.")
+	parser.add_argument("-a", "--alphabet", choices = [ "alpha", "math" ], action = "append", default = [ ], required = True, help = "Name of the ciphertext alphabet(s) to use. Can be specified multiple times, can be any of %(choices)s. Must be given at least once.")
 	parser.add_argument("-r", "--reveal", metavar = "letters", default = "ERNSTL", help = "Letters to initially reveal. Defaults to %(default)s.")
 	parser.add_argument("-w", "--solution-word", metavar = "word", help = "When puzzle should contain a final solution word, this parameter sets it.")
 	parser.add_argument("-s", "--solution", metavar = "filename", help = "Write an output SVG file that includes a solution.")

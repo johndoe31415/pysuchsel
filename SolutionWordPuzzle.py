@@ -21,8 +21,7 @@
 import random
 import collections
 from SVGDocument import SVGDocument
-
-class PuzzleNotSolvableException(Exception): pass
+from Exceptions import PuzzleNotSolvableException
 
 class SolutionWordPuzzle():
 	def __init__(self, word_list, solution_word):

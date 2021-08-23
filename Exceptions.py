@@ -18,18 +18,4 @@
 #
 #	Johannes Bauer <JohannesBauer@gmx.de>
 
-from BaseAction import BaseAction
-from CryptoPuzzle import CryptoPuzzle
-from Tools import Tools
-
-class ActionCrypto(BaseAction):
-	def run(self):
-		if len(self._args.alphabet) == 0:
-			raise Exception("No alphabet given on command line.")
-		plain_lines = Tools.read_file(self._args.infile)
-		cp = CryptoPuzzle(plain_lines = plain_lines, alphabet_names = self._args.alphabet, reveal_letters = self._args.reveal, crypto_solution = self._args.solution_word)
-		if self._args.verbose >= 1:
-			cp.dump()
-		if self._args.solution:
-			cp.write_svg(self._args.solution, solution = True)
-		cp.write_svg(self._args.outfile)
+class PuzzleNotSolvableException(Exception): pass
