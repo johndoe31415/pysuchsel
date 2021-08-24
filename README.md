@@ -436,5 +436,49 @@ for the solution ("solution.svg").  Here's how they look:
 ![Paddelfisch Solution Word](https://raw.githubusercontent.com/johndoe31415/pysuchsel/master/docs/solword_solution.png)
 
 
+## Crypto Puzzle Mode
+pysuchsel can also generate crypto puzzles where each letter corresponds to a
+ciphertext character. Only a few letters are revealed and the reader needs to
+replace and infer the rest of the letter, possibly using a codeword in the end.
+
+For this, a text file can be generated first:
+
+```
+$ cat secret.txt
+HELLO THERE
+THIS IS A
+SECRET MESSAGE
+```
+
+Then, simply do:
+
+```
+$ ./pysuchsel crypto -a math secret.txt crypto_puzzle.svg
+```
+
+By default, the letters ERNSTL are revealed (on their first occurrence,
+respectively). This is how the output looks like:
+
+![Paddelfisch Solution Word](https://raw.githubusercontent.com/johndoe31415/pysuchsel/master/docs/crypto_puzzle.png)
+
+The alphabet that is used for ciphertext characters can also be chosen. To learn what is available, consult the help page:
+
+```
+$ ./pysuchsel crypto --help
+[...]
+  -a {alpha,math,graph,zodiac,chess,runes}, --alphabet {alpha,math,graph,zodiac,chess,runes}
+                        Name of the ciphertext alphabet(s) to use. Can be
+                        specified multiple times, can be any of alpha, math,
+                        graph, zodiac, chess, runes. Must be given at least
+                        once.
+```
+
+To customize which letters are revealed, use the -r option. For example, to
+reveal all vovels:
+
+```
+$ ./pysuchsel crypto -a math -r AEIOU secret.txt crypto_puzzle.svg
+```
+
 ## License
 GNU-GPL 3.
