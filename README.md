@@ -480,5 +480,17 @@ reveal all vovels:
 $ ./pysuchsel crypto -a math -r AEIOU secret.txt crypto_puzzle.svg
 ```
 
+By specifying the -v option, you can see what the reader can definitely start
+with (all the revealed letters are shown, although in the output SVG only the
+first occurrence is ever shown):
+
+```
+$ ./pysuchsel crypto -v -a math -r AEIOU secret.txt crypto_puzzle.svg
+_E__O __E_E
+__I_ I_ A
+_E__E_ _E__A_E
+```
+
+
 ## License
 GNU-GPL 3.
