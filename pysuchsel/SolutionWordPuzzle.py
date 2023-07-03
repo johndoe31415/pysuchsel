@@ -1,5 +1,5 @@
 #	pysuchsel - Create Suchsel word puzzles from Python
-#	Copyright (C) 2019-2021 Johannes Bauer
+#	Copyright (C) 2019-2023 Johannes Bauer
 #
 #	This file is part of pysuchsel.
 #
@@ -20,8 +20,8 @@
 
 import random
 import collections
-from SVGDocument import SVGDocument
-from Exceptions import PuzzleNotSolvableException
+from .SVGDocument import SVGDocument
+from .Exceptions import PuzzleNotSolvableException
 
 class SolutionWordPuzzle():
 	def __init__(self, word_list, solution_word):

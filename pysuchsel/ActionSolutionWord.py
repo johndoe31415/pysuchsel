@@ -1,5 +1,5 @@
 #	pysuchsel - Create Suchsel word puzzles from Python
-#	Copyright (C) 2019-2021 Johannes Bauer
+#	Copyright (C) 2019-2023 Johannes Bauer
 #
 #	This file is part of pysuchsel.
 #
@@ -18,9 +18,9 @@
 #
 #	Johannes Bauer <JohannesBauer@gmx.de>
 
-from BaseAction import BaseAction
-from SolutionWordPuzzle import SolutionWordPuzzle, PuzzleNotSolvableException
-from Tools import Tools
+from .BaseAction import BaseAction
+from .SolutionWordPuzzle import SolutionWordPuzzle, PuzzleNotSolvableException
+from .Tools import Tools
 
 class ActionSolutionWord(BaseAction):
 	def run(self):

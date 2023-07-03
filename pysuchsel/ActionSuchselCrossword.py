@@ -1,5 +1,5 @@
 #	pysuchsel - Create Suchsel word puzzles from Python
-#	Copyright (C) 2019-2021 Johannes Bauer
+#	Copyright (C) 2019-2023 Johannes Bauer
 #
 #	This file is part of pysuchsel.
 #
@@ -18,11 +18,11 @@
 #
 #	Johannes Bauer <JohannesBauer@gmx.de>
 
-from BaseAction import BaseAction
-from RandomDist import RandomDist
-from Suchsel import Suchsel
-from Tools import Tools
-from Alphabet import Alphabet
+from .BaseAction import BaseAction
+from .RandomDist import RandomDist
+from .Suchsel import Suchsel
+from .Tools import Tools
+from .Alphabet import Alphabet
 
 class ActionSuchselCrossword(BaseAction):
 	def _get_placement_rule(self):

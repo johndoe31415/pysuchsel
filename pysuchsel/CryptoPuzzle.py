@@ -1,5 +1,5 @@
 #	pysuchsel - Create Suchsel word puzzles from Python
-#	Copyright (C) 2019-2021 Johannes Bauer
+#	Copyright (C) 2019-2023 Johannes Bauer
 #
 #	This file is part of pysuchsel.
 #
@@ -20,16 +20,16 @@
 
 import random
 import json
-from SVGDocument import SVGDocument
-from Exceptions import PuzzleNotSolvableException
+import pkgutil
+from .SVGDocument import SVGDocument
+from .Exceptions import PuzzleNotSolvableException
 
 class CryptoPuzzle():
 	def __init__(self, plain_lines, alphabet_names, reveal_letters, crypto_solution = None):
 		self._plain_lines = plain_lines
 		self._crypto_solution = crypto_solution
 		self._reveal_letters = set(reveal_letters)
-		with open("definitions.json") as f:
-			crypto_alphabet_names = json.load(f)["crypto"]
+		crypto_alphabet_names = json.loads(pkgutil.get_data("pysuchsel", "definitions.json"))["crypto"]
 
 		crypto_chars = set()
 		for alphabet in alphabet_names:

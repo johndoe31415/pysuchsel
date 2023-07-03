@@ -1,5 +1,5 @@
 #	pysuchsel - Create Suchsel word puzzles from Python
-#	Copyright (C) 2019-2019 Johannes Bauer
+#	Copyright (C) 2019-2023 Johannes Bauer
 #
 #	This file is part of pysuchsel.
 #
@@ -18,20 +18,18 @@
 #
 #	Johannes Bauer <JohannesBauer@gmx.de>
 
-import json
-import string
-from RandomDist import RandomDist
+from .BaseAction import BaseAction
+from .CryptoPuzzle import CryptoPuzzle
+from .Tools import Tools
 
-class Alphabet():
-	def __init__(self, language, uniform_distribution = False):
-		with open("definitions.json") as f:
-			distributions = json.load(f)["distributions"]
-		distribution = distributions[language]
-
-		if uniform_distribution:
-			self._dist = RandomDist({ letter: 1 for letter in distribution.keys() })
-		else:
-			self._dist = RandomDist({ letter: round(10000 * probability) for (letter, probability) in distribution.items() })
-
-	def get(self):
-		return self._dist.event()
+class ActionCrypto(BaseAction):
+	def run(self):
+		if len(self._args.alphabet) == 0:
+			raise Exception("No alphabet given on command line.")
+		plain_lines = Tools.read_file(self._args.infile)
+		cp = CryptoPuzzle(plain_lines = plain_lines, alphabet_names = self._args.alphabet, reveal_letters = self._args.reveal, crypto_solution = self._args.solution_word)
+		if self._args.verbose >= 1:
+			cp.dump()
+		if self._args.solution:
+			cp.write_svg(self._args.solution, solution = True)
+		cp.write_svg(self._args.outfile)

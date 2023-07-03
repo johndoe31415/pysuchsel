@@ -1,5 +1,5 @@
 #	pysuchsel - Create Suchsel word puzzles from Python
-#	Copyright (C) 2019-2019 Johannes Bauer
+#	Copyright (C) 2019-2023 Johannes Bauer
 #
 #	This file is part of pysuchsel.
 #
@@ -19,7 +19,7 @@
 #	Johannes Bauer <JohannesBauer@gmx.de>
 
 import xml.dom.minidom
-from XMLTools import XMLTools
+from .XMLTools import XMLTools
 
 class SVGDocument():
 	def __init__(self, **kwargs):

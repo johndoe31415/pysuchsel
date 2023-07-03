@@ -1,5 +1,5 @@
 #	pysuchsel - Create Suchsel word puzzles from Python
-#	Copyright (C) 2019-2021 Johannes Bauer
+#	Copyright (C) 2019-2023 Johannes Bauer
 #
 #	This file is part of pysuchsel.
 #
@@ -18,18 +18,24 @@
 #
 #	Johannes Bauer <JohannesBauer@gmx.de>
 
-from BaseAction import BaseAction
-from CryptoPuzzle import CryptoPuzzle
-from Tools import Tools
+import json
+import pkgutil
+from .BaseAction import BaseAction
+from .SVGDocument import SVGDocument
 
-class ActionCrypto(BaseAction):
+class ActionFontTest(BaseAction):
 	def run(self):
-		if len(self._args.alphabet) == 0:
-			raise Exception("No alphabet given on command line.")
-		plain_lines = Tools.read_file(self._args.infile)
-		cp = CryptoPuzzle(plain_lines = plain_lines, alphabet_names = self._args.alphabet, reveal_letters = self._args.reveal, crypto_solution = self._args.solution_word)
-		if self._args.verbose >= 1:
-			cp.dump()
-		if self._args.solution:
-			cp.write_svg(self._args.solution, solution = True)
-		cp.write_svg(self._args.outfile)
+		svg = SVGDocument()
+
+		crypto = json.loads(pkgutil.get_data("pysuchsel", "definitions.json"))["crypto"]
+		size = 20
+		for (y, (name, alphabets)) in enumerate(crypto.items()):
+			svg.textregion(-100, size * y, 90, size, name, halign = "right")
+			alphabet = "".join(alphabets)
+			if self._args.sort:
+				alphabet = sorted(set(alphabet))
+			for (x, letter) in enumerate(alphabet):
+				svg.rect(size * x, size * y, size, size)
+				svg.textregion(size * x, size * y + 4, size, size, letter, halign = "center")
+		svg.autosize()
+		svg.writefile(self._args.outfile)

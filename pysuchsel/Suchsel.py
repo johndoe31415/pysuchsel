@@ -1,5 +1,5 @@
 #	pysuchsel - Create Suchsel word puzzles from Python
-#	Copyright (C) 2019-2019 Johannes Bauer
+#	Copyright (C) 2019-2023 Johannes Bauer
 #
 #	This file is part of pysuchsel.
 #
@@ -20,7 +20,7 @@
 
 import random
 import collections
-from SVGDocument import SVGDocument
+from .SVGDocument import SVGDocument
 
 class VoidPlaceholder():
 	def __eq__(self, other):

@@ -1,5 +1,5 @@
 #	pysuchsel - Create Suchsel word puzzles from Python
-#	Copyright (C) 2019-2021 Johannes Bauer
+#	Copyright (C) 2019-2023 Johannes Bauer
 #
 #	This file is part of pysuchsel.
 #
@@ -19,22 +19,19 @@
 #	Johannes Bauer <JohannesBauer@gmx.de>
 
 import json
-from BaseAction import BaseAction
-from SVGDocument import SVGDocument
+import string
+import pkgutil
+from .RandomDist import RandomDist
 
-class ActionFontTest(BaseAction):
-	def run(self):
-		svg = SVGDocument()
-		with open("definitions.json") as f:
-			crypto = json.load(f)["crypto"]
-		size = 20
-		for (y, (name, alphabets)) in enumerate(crypto.items()):
-			svg.textregion(-100, size * y, 90, size, name, halign = "right")
-			alphabet = "".join(alphabets)
-			if self._args.sort:
-				alphabet = sorted(set(alphabet))
-			for (x, letter) in enumerate(alphabet):
-				svg.rect(size * x, size * y, size, size)
-				svg.textregion(size * x, size * y + 4, size, size, letter, halign = "center")
-		svg.autosize()
-		svg.writefile(self._args.outfile)
+class Alphabet():
+	def __init__(self, language, uniform_distribution = False):
+		distributions = json.loads(pkgutil.get_data("pysuchsel", "definitions.json"))["distributions"]
+		distribution = distributions[language]
+
+		if uniform_distribution:
+			self._dist = RandomDist({ letter: 1 for letter in distribution.keys() })
+		else:
+			self._dist = RandomDist({ letter: round(10000 * probability) for (letter, probability) in distribution.items() })
+
+	def get(self):
+		return self._dist.event()
