@@ -20,22 +20,23 @@
 
 import json
 import pkgutil
+from pysvgedit import SVGDocument, SVGRect, Vector2D, Convenience as svgc
 from .BaseAction import BaseAction
-from .SVGDocument import SVGDocument
 
 class ActionFontTest(BaseAction):
 	def run(self):
-		svg = SVGDocument()
-
+		svg = SVGDocument.new()
 		crypto = json.loads(pkgutil.get_data("pysuchsel", "definitions.json"))["crypto"]
 		size = 20
 		for (y, (name, alphabets)) in enumerate(crypto.items()):
-			svg.textregion(-100, size * y, 90, size, name, halign = "right")
+			svgc.text(svg, text = name, x = -100, y = size * y, width = 90, height = size, halign = "right")
 			alphabet = "".join(alphabets)
 			if self._args.sort:
 				alphabet = sorted(set(alphabet))
+
+			yshift = 4
 			for (x, letter) in enumerate(alphabet):
-				svg.rect(size * x, size * y, size, size)
-				svg.textregion(size * x, size * y + 4, size, size, letter, halign = "center")
-		svg.autosize()
+				svg.add(SVGRect.new(pos = Vector2D(size * x, size * y), extents = Vector2D(size, size)))
+				svgc.text(svg, text = letter, x = size * x, y = size * y + yshift, width = size, height = size - yshift, halign = "center")
+		svgc.autosize(svg)
 		svg.writefile(self._args.outfile)
