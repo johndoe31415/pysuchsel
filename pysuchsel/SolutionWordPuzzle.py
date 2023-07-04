@@ -20,7 +20,7 @@
 
 import random
 import collections
-from .SVGDocument import SVGDocument
+from pysvgedit import SVGDocument, SVGGroup, SVGRect, Vector2D, Convenience as svgc
 from .Exceptions import PuzzleNotSolvableException
 
 class SolutionWordPuzzle():
@@ -61,27 +61,34 @@ class SolutionWordPuzzle():
 		self._solution = solution
 		return solution
 
-	def write_svg(self, output_filename, solution = False):
-		svg = SVGDocument()
+	def write_svg(self, output_filename):
+		svg = SVGDocument.new()
+		grid_layer = svg.add(SVGGroup.new(is_layer = True))
+		grid_layer.label = "Grid"
+		solution_layer = svg.add(SVGGroup.new(is_layer = True))
+		solution_layer.label = "Solution"
+
 		size = 20
+		yoffset = 4
 		for (y, (word, letter_index)) in enumerate(self._solution):
 
 			x_begin = -letter_index - 1
-			svg.rect(size * x_begin, size * y, size, size, fillcolor = "3498db")
-			svg.textregion(size * x_begin, size * y + 4, size, size, str(y + 1), halign = "center")
+			rect = grid_layer.add(SVGRect.new(pos = size * Vector2D(x_begin, y), extents = Vector2D(size, size)))
+			rect.style["fill"] = "#3498db"
+			svgc.text(grid_layer, pos = Vector2D(size * x_begin, size * y + yoffset), extents = Vector2D(size, size - yoffset), text = str(y + 1), halign = "center")
 
 			for (x_raw, letter) in enumerate(word):
 				x = x_raw - letter_index
 
 				if x == 0:
-					svg.rect(size * x, size * y, size, size, fillcolor = "f1c40f")
+					rect = grid_layer.add(SVGRect.new(pos = size * Vector2D(x, y), extents = Vector2D(size, size)))
+					rect.style["fill"] = "#f1c40f"
 				else:
-					svg.rect(size * x, size * y, size, size)
+					grid_layer.add(SVGRect.new(pos = size * Vector2D(x, y), extents = Vector2D(size, size)))
 
-				if solution:
-					svg.textregion(size * x, size * y + 4, size, size, letter, halign = "center", font_weight = "bold" if (x == 0) else "normal")
+				svgc.text(solution_layer, pos = Vector2D(size * x, size * y + yoffset), extents = Vector2D(size, size - yoffset), text = letter, halign = "center", attribute = "bold" if (x == 0) else "none")
 
-		svg.autosize()
+		svgc.autosize(svg)
 		svg.writefile(output_filename)
 
 

@@ -42,7 +42,4 @@ class ActionSolutionWord(BaseAction):
 			for (word_no, (word, letter_index)) in enumerate(solution, 1):
 				word_indent = " " * (indent - letter_index)
 				print("%2d %s%s" % (word_no, word_indent, word))
-
-		if self._args.solution is not None:
-			swp.write_svg(self._args.solution, solution = True)
 		swp.write_svg(self._args.outfile)
