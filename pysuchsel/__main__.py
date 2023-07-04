@@ -38,7 +38,6 @@ def main():
 		parser.add_argument("-c", "--contiguous", action = "store_true", help = "Try to create a contiguous Suchsel, i.e., where some letters overlap.")
 		parser.add_argument("--place-attempts", metavar = "cnt", type = int, default = 500, help = "Placing words is non-deterministic. This increases the amounts of attempts for placing a word before giving up. Longer might yield better results, but also takes longer.")
 		parser.add_argument("-a", "--creation-attempts", metavar = "cnt", type = int, default = 1, help = "Sometimes, not all words can be placed. This gives the number of attempts that creation of the Suchsel/cross word puzzle is re-attempted before giving up.")
-		parser.add_argument("-s", "--solution", metavar = "filename", help = "Write an output SVG file that includes a solution.")
 		parser.add_argument("-v", "--verbose", action = "count", default = 0, help = "Increase verbosity. Can be specified multiple times.")
 		parser.add_argument("infile", metavar = "infile", help = "Input filename that contains all words separated by newlines.")
 		parser.add_argument("outfile", metavar = "outfile", help = "Output SVG file to create.")

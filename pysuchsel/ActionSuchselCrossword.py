@@ -39,7 +39,7 @@ class ActionSuchselCrossword(BaseAction):
 		self._unplaced_words = [ ]
 		self._placed_words = { }
 		next_id = 1
-		self._suchsel = Suchsel(self._args.width, self._args.height, plcrule, attempts = self._args.place_attempts)
+		self._suchsel = Suchsel(self._args.width, self._args.height, plcrule, attempts = self._args.place_attempts, is_crossword = (self._cmd == "crossword"))
 		for word in self._words:
 			if self._cmd == "suchsel":
 				placed = self._suchsel.place(word, contiguous = self._args.contiguous)
@@ -74,9 +74,7 @@ class ActionSuchselCrossword(BaseAction):
 			if self._args.verbose >= 2:
 				self._suchsel.dump()
 
-		if self._args.solution is not None:
-			self._suchsel.write_svg(self._args.solution, solution = True)
-		self._suchsel.write_svg(self._args.outfile, fill_letters = (self._cmd == "suchsel"))
+		self._suchsel.write_svg(self._args.outfile)
 
 		if self._cmd == "crossword":
 			for (word_id, word) in sorted(self._placed_words.items()):

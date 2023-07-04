@@ -20,7 +20,7 @@
 
 import random
 import collections
-from .SVGDocument import SVGDocument
+from pysvgedit import SVGDocument, SVGGroup, SVGRect, Vector2D, Convenience as svgc
 
 class VoidPlaceholder():
 	def __eq__(self, other):
@@ -49,11 +49,12 @@ class ArrowMarker():
 		}.get(self._direction, "?")
 
 class Suchsel():
-	def __init__(self, width, height, placement, attempts):
+	def __init__(self, width, height, placement, attempts, is_crossword = False):
 		self._width = width
 		self._height = height
 		self._placement = placement
 		self._attempts = attempts
+		self._is_crossword = is_crossword
 		self._grid = { }
 		self._fillers_at = set()
 
@@ -209,27 +210,49 @@ class Suchsel():
 			print("| " + (" ".join(line)) + "  |")
 		print("+-" + ("-" * (2 * self._width)) + "-+")
 
-	def write_svg(self, output_filename, solution = False, fill_letters = True):
-		svg = SVGDocument()
+	def write_svg(self, output_filename):
+		svg = SVGDocument.new()
+
+		grid_layer = svg.add(SVGGroup.new(is_layer = True))
+		grid_layer.label = "Grid"
+		if self._is_crossword:
+			solution_layer = svg.add(SVGGroup.new(is_layer = True))
+			solution_layer.label = "Solution"
+		else:
+			filler_layer = svg.add(SVGGroup.new(is_layer = True))
+			filler_layer.label = "Filler letters"
+			solution_layer = svg.add(SVGGroup.new(is_layer = True))
+			solution_layer.label = "Solution normal"
+			solution_highlight_layer = svg.add(SVGGroup.new(is_layer = True))
+			solution_highlight_layer.label = "Solution highlighted"
+
 		size = 20
+		yoffset = 4
 		for y in range(self._height):
 			for x in range(self._width):
 				pos = (x, y)
 				letter = self._grid.get(pos)
 				is_filler = pos in self._fillers_at
 				if isinstance(letter, str):
-					if solution and (not is_filler):
-						# Bold font and background color for the solution
-						svg.rect(size * x, size * y, size, size, fillcolor = "f1c40f")
-						if fill_letters:
-							svg.textregion(size * x, size * y + 4, size, size, letter, halign = "center", font_weight = "bold")
-					else:
-						svg.rect(size * x, size * y, size, size)
-						if fill_letters:
-							svg.textregion(size * x, size * y + 4, size, size, letter, halign = "center")
-				elif isinstance(letter, ArrowMarker):
-					svg.rect(size * x, size * y, size, size, strokecolor = "3498db")
-					svg.textregion(size * x, size * y + 4, size, size, str(letter.marking), halign = "center")
+					grid_layer.add(SVGRect.new(pos = size * Vector2D(x, y), extents = Vector2D(size, size)))
 
-		svg.autosize()
+					if is_filler:
+						# Random filler letter
+						svgc.text(filler_layer, pos = Vector2D(size * x, size * y + yoffset), extents = Vector2D(size, size - yoffset), text = letter, halign = "center")
+
+					if not is_filler:
+						# Solution letter
+						svgc.text(solution_layer, pos = Vector2D(size * x, size * y + yoffset), extents = Vector2D(size, size - yoffset), text = letter, halign = "center")
+
+						if not self._is_crossword:
+							# Additionally, put in bold and highlight in the solution highlight layer
+							rect = solution_highlight_layer.add(SVGRect.new(pos = size * Vector2D(x, y), extents = Vector2D(size, size)))
+							rect.style["fill"] = "#f1c40f"
+							svgc.text(solution_highlight_layer, pos = Vector2D(size * x, size * y + yoffset), extents = Vector2D(size, size - yoffset), text = letter, halign = "center", attribute = "bold")
+				elif isinstance(letter, ArrowMarker):
+					rect = grid_layer.add(SVGRect.new(pos = size * Vector2D(x, y), extents = Vector2D(size, size)))
+					rect.style["stroke"] = "#3498db"
+					svgc.text(grid_layer, pos = Vector2D(size * x, size * y + yoffset), extents = Vector2D(size, size - yoffset), text = str(letter.marking), halign = "center")
+
+		svgc.autosize(svg)
 		svg.writefile(output_filename)
