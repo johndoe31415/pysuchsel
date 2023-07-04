@@ -1,3 +1,5 @@
 __pycache__
 .*.swp
 *.svg
+dist
+pysuchsel.egg-info
