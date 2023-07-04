@@ -20,6 +20,7 @@
 #	Johannes Bauer <JohannesBauer@gmx.de>
 
 import sys
+import pysuchsel
 from .MultiCommand import MultiCommand
 from .ActionSuchselCrossword import ActionSuchselCrossword
 from .ActionSolutionWord import ActionSolutionWord
@@ -27,7 +28,7 @@ from .ActionCrypto import ActionCrypto
 from .ActionFontTest import ActionFontTest
 
 def main():
-	mc = MultiCommand()
+	mc = MultiCommand(trailing_text = "version: pysuchsel v%s" % (pysuchsel.VERSION))
 
 	def genparser(parser):
 		parser.add_argument("-f", "--fill-rule", choices = [ "en", "de" ], default = "en", help = "Distribute empty spaces with this alphabet and natural language frequency distribution. I.e., every letter occurs with the same probability or is the frequency that is also commonly found in the natural language used. Can be one of %(choices)s, defaults to %(default)s.")
