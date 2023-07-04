@@ -16,6 +16,16 @@ these placements.
 For crossword puzzles, it takes care there is not adjacent cells filled, it
 enumerates the words and creates number fields in the resulting SVG.
 
+## Installation
+pysuchsel requrires an SVG library written by myself,
+[pysvgedit](https://github.com/johndoe31415/pysvgedit). It can, however, be
+easily installed via PyPi:
+
+```
+$ pip install pysuchsel
+```
+
+
 ## Suchsel mode
 You'll first have to create a file that contains all the words (e.g., using
 pluma or vim). We'll call it words.txt
@@ -278,45 +288,9 @@ $ ./pysuchsel suchsel -f de --uniform-distribution -x 5 -y 11 -vv words.txt my_f
 
 Where you'll see many more "Ä", "Ö", "Ü"s.
 
-You can also generate not only the puzzle itself, but also the solution for the puzzle by specifying the "-s" option:
-
-```
-$ ./pysuchsel suchsel -f de -x 15 -y 15 -s solution.svg -vv words.txt my_first_suchsel.svg
-+--------------------------------+
-|                                |
-|                       P        |
-|                       A        |
-|                       D        |
-|                       D        |
-|                       E        |
-|                       L        |
-|                       F        |
-|                       I        |
-|   S U C H S E L       S        |
-|                       C        |
-|                       H        |
-|                                |
-|                                |
-|                                |
-+--------------------------------+
-+--------------------------------+
-| Ü E N N D H C I R E T L H D M  |
-| Ö S N E N A E N I M R P S S N  |
-| I N Ä W A A I N T E M A E N R  |
-| E O K R I V B E Z B R D Z A N  |
-| G Ü I H E M E E L E L D B E L  |
-| R T N T W N C R L H E E F Q F  |
-| A G T A H F G G R Z A L S L U  |
-| P E Ü I C G T R E F T F E E E  |
-| E O N A S T D A R R E I F E E  |
-| H S U C H S E L I A G S O F S  |
-| S E I A R N R T N N T C N I B  |
-| E S E U A G D E N D U H E R G  |
-| S F E W E R U B R L E A O E E  |
-| D E I N B E R H Ü B B E C O E  |
-| I R H D T A R I F E S M N E S  |
-+--------------------------------+
-```
+The solution to all puzzles is always included in every SVG as a separate
+layer; check out "Layer -> Layers and Objects" in Inkscape, for example, and
+choose the visibility that suits your needs.
 
 This is how a PNG rendering then looks like:
 
@@ -412,6 +386,7 @@ The rendering of this now looks like this:
 
 ![Paddelfisch Crossword](https://raw.githubusercontent.com/johndoe31415/pysuchsel/master/docs/my_first_crossword.png)
 
+
 ## Solution Word Puzzle
 Out of the word list, there can also be a puzzle be created that leads to a
 specific solution word. This is called the "solution word" mode. For it to
@@ -420,7 +395,7 @@ create. pysuchsel will tell you if you have enough words to create that puzzle.
 For example, you can do this:
 
 ```
-$ ./pysuchsel solword -v -s solution.svg words.txt solword.svg ITZI
+$ ./pysuchsel solword -v words.txt solword.svg ITZI
            #
  1  PADDELFISCH
  2 KREUZWORT
@@ -428,8 +403,8 @@ $ ./pysuchsel solword -v -s solution.svg words.txt solword.svg ITZI
  4        MIRABELLE
 ```
 
-This will create two files, one for the puzzle ("solword.svg") and the other
-for the solution ("solution.svg").  Here's how they look:
+This will also create a puzzle SVG ("solword.svg") which includes the solution
+as own separate layers.  This is how it looks:
 
 ![Paddelfisch Solution Word](https://raw.githubusercontent.com/johndoe31415/pysuchsel/master/docs/solword.png)
 
