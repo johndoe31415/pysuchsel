@@ -40,13 +40,13 @@ Our file only contains two words. Then, you can already call pysuchsel to place
 them into a Suchsel puzzle:
 
 ```
-$ ./pysuchsel suchsel words.txt my_first_suchsel.svg
+$ pysuchsel suchsel words.txt my_first_suchsel.svg
 ```
 
 If you want to see where they were placed, specify "-v" as well:
 
 ```
-$ ./pysuchsel suchsel -v words.txt my_first_suchsel.svg
+$ pysuchsel suchsel -v words.txt my_first_suchsel.svg
 +--------------------------------+
 |                                |
 |                                |
@@ -74,7 +74,7 @@ $ ./pysuchsel suchsel -v words.txt my_first_suchsel.svg
 You can influence the size with the "-x" and "-y" options:
 
 ```
-$ ./pysuchsel suchsel -x 11 -y 11 -v words.txt my_first_suchsel.svg
+$ pysuchsel suchsel -x 11 -y 11 -v words.txt my_first_suchsel.svg
 +------------------------+
 | P                      |
 | A                      |
@@ -94,7 +94,7 @@ You can also specify that you'd like words to share letters, which is then
 going to be the preference:
 
 ```
-$ ./pysuchsel suchsel -c -x 11 -y 11 -v words.txt my_first_suchsel.svg
+$ pysuchsel suchsel -c -x 11 -y 11 -v words.txt my_first_suchsel.svg
 +------------------------+
 |                   P    |
 |                   A    |
@@ -114,7 +114,7 @@ When you specify "--verbose" twice, it'll also show how the padded Suchsel
 looks like on the command line:
 
 ```
-$ ./pysuchsel suchsel -c -x 11 -y 11 -vv words.txt my_first_suchsel.svg
+$ pysuchsel suchsel -c -x 11 -y 11 -vv words.txt my_first_suchsel.svg
 +------------------------+
 |                        |
 |                        |
@@ -147,7 +147,7 @@ To specify placement, use the "-p" command line option. For example, to only
 create diagonal placement to the bottom right, do:
 
 ```
-$ ./pysuchsel suchsel -x 11 -y 11 -p dbr -v words.txt my_first_suchsel.svg
+$ pysuchsel suchsel -x 11 -y 11 -p dbr -v words.txt my_first_suchsel.svg
 +------------------------+
 | P     S                |
 |   A     U              |
@@ -167,7 +167,7 @@ To allow more than one placement method, specify them all. For example, only
 allow top-to-bottom and bottom-to-top:
 
 ```
-$ ./pysuchsel suchsel -x 11 -y 11 -p tb -p bt -v words.txt my_first_suchsel.svg
+$ pysuchsel suchsel -x 11 -y 11 -p tb -p bt -v words.txt my_first_suchsel.svg
 +------------------------+
 |         S       H      |
 |         U       C      |
@@ -190,7 +190,7 @@ placed). That makes uncommon letters (e.g., Q and Y in the German language)
 rather frequent not stand out. For example:
 
 ```
-$ ./pysuchsel suchsel -x 5 -y 11 -vv words.txt my_first_suchsel.svg
+$ pysuchsel suchsel -x 5 -y 11 -vv words.txt my_first_suchsel.svg
 +------------+
 | P          |
 | A          |
@@ -223,7 +223,7 @@ You can now first switch to German language, which will include more letters
 and choose the German language distribution:
 
 ```
-$ ./pysuchsel suchsel -f de -x 5 -y 11 -vv words.txt my_first_suchsel.svg
+$ pysuchsel suchsel -f de -x 5 -y 11 -vv words.txt my_first_suchsel.svg
 +------------+
 |       P    |
 |       A    |
@@ -257,7 +257,7 @@ it only occurs once (because its character frequency in German language is
 comparatively low). Now compare that to:
 
 ```
-$ ./pysuchsel suchsel -f de --uniform-distribution -x 5 -y 11 -vv words.txt my_first_suchsel.svg
+$ pysuchsel suchsel -f de --uniform-distribution -x 5 -y 11 -vv words.txt my_first_suchsel.svg
 +------------+
 |     P      |
 |     A   S  |
@@ -317,7 +317,7 @@ XYLOPHON
 Then, try to create a crossword:
 
 ```
-$ ./pysuchsel crossword -v words.txt my_first_crossword.svg
+$ pysuchsel crossword -v words.txt my_first_crossword.svg
 Warning: could not place word "FLUGZEUG".
 Warning: could not place word "KREUZWORT".
  1: PADDELFISCH
@@ -352,7 +352,7 @@ pysuchsel to re-attempt until it finds a solution that places all words by
 specifying the "-a" (or --creation-attempts) parameter:
 
 ```
-$ ./pysuchsel crossword -v -a 50 words.txt my_first_crossword.svg
+$ pysuchsel crossword -v -a 50 words.txt my_first_crossword.svg
  1: KREUZWORT
  2: XYLOPHON
  3: PADDELFISCH
@@ -395,7 +395,7 @@ create. pysuchsel will tell you if you have enough words to create that puzzle.
 For example, you can do this:
 
 ```
-$ ./pysuchsel solword -v words.txt solword.svg ITZI
+$ pysuchsel solword -v words.txt solword.svg ITZI
            #
  1  PADDELFISCH
  2 KREUZWORT
@@ -428,7 +428,7 @@ SECRET MESSAGE
 Then, simply do:
 
 ```
-$ ./pysuchsel crypto -a math secret.txt crypto_puzzle.svg
+$ pysuchsel crypto -a math secret.txt crypto_puzzle.svg
 ```
 
 By default, the letters ERNSTL are revealed (on their first occurrence,
@@ -439,7 +439,7 @@ respectively). This is how the output looks like:
 The alphabet that is used for ciphertext characters can also be chosen. To learn what is available, consult the help page:
 
 ```
-$ ./pysuchsel crypto --help
+$ pysuchsel crypto --help
 [...]
   -a {alpha,math,graph,zodiac,chess,runes}, --alphabet {alpha,math,graph,zodiac,chess,runes}
                         Name of the ciphertext alphabet(s) to use. Can be
@@ -452,7 +452,7 @@ To customize which letters are revealed, use the -r option. For example, to
 reveal all vovels:
 
 ```
-$ ./pysuchsel crypto -a math -r AEIOU secret.txt crypto_puzzle.svg
+$ pysuchsel crypto -a math -r AEIOU secret.txt crypto_puzzle.svg
 ```
 
 By specifying the -v option, you can see what the reader can definitely start
@@ -460,7 +460,7 @@ with (all the revealed letters are shown, although in the output SVG only the
 first occurrence is ever shown):
 
 ```
-$ ./pysuchsel crypto -v -a math -r AEIOU secret.txt crypto_puzzle.svg
+$ pysuchsel crypto -v -a math -r AEIOU secret.txt crypto_puzzle.svg
 _E__O __E_E
 __I_ I_ A
 _E__E_ _E__A_E
