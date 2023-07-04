@@ -56,7 +56,6 @@ def main():
 		parser.add_argument("-a", "--alphabet", choices = [ "alpha", "math", "graph", "zodiac", "chess", "runes" ], action = "append", default = [ ], required = True, help = "Name of the ciphertext alphabet(s) to use. Can be specified multiple times, can be any of %(choices)s. Must be given at least once.")
 		parser.add_argument("-r", "--reveal", metavar = "letters", default = "ERNSTL", help = "Letters to initially reveal. Defaults to %(default)s.")
 		parser.add_argument("-w", "--solution-word", metavar = "word", help = "When puzzle should contain a final solution word, this parameter sets it.")
-		parser.add_argument("-s", "--solution", metavar = "filename", help = "Write an output SVG file that includes a solution.")
 		parser.add_argument("-v", "--verbose", action = "count", default = 0, help = "Increase verbosity. Can be specified multiple times.")
 		parser.add_argument("infile", metavar = "infile", help = "Input filename that contains all lines separated by newlines.")
 		parser.add_argument("outfile", metavar = "outfile", help = "Output SVG file to create.")

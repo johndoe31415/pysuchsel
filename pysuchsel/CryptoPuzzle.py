@@ -21,7 +21,7 @@
 import random
 import json
 import pkgutil
-from .SVGDocument import SVGDocument
+from pysvgedit import SVGDocument, SVGGroup, SVGRect, Vector2D, Convenience as svgc
 from .Exceptions import PuzzleNotSolvableException
 
 class CryptoPuzzle():
@@ -60,9 +60,33 @@ class CryptoPuzzle():
 			print("".join(show))
 
 
-	def write_svg(self, output_filename, solution = False):
-		svg = SVGDocument()
+	def write_svg(self, output_filename):
+		svg = SVGDocument.new()
+		cipher_layer = svg.add(SVGGroup.new(is_layer = True))
+		cipher_layer.label = "Ciphertext"
+
+		initial_layer = svg.add(SVGGroup.new(is_layer = True))
+		initial_layer.label = "Initially given"
+
+		inference_layer = svg.add(SVGGroup.new(is_layer = True))
+		inference_layer.label = "Initially inferrable"
+		inference_layer.style.hide()
+
+		solution_layer = svg.add(SVGGroup.new(is_layer = True))
+		solution_layer.label = "Solution"
+		solution_layer.style.hide()
+
+		if self._crypto_solution is not None:
+			final_ciphertext = svg.add(SVGGroup.new(is_layer = True))
+			final_ciphertext.label = "Final ciphertext"
+
+			final_plaintext = svg.add(SVGGroup.new(is_layer = True))
+			final_plaintext.label = "Final solution"
+			final_plaintext.style.hide()
+
+
 		size = 20
+		yoffset = 4
 		line_height = 2 * size + 10
 
 		revealed_letters = set()
@@ -71,30 +95,31 @@ class CryptoPuzzle():
 				if plain_letter == " ":
 					continue
 				cipher_letter = self._key[plain_letter]
-				svg.rect(size * x, line_height * y, size, size)
-				svg.rect(size * x, line_height * y + size, size, size)
-				svg.textregion(size * x, line_height * y + 4, size, size, cipher_letter, halign = "center")
-				if solution:
-					svg.textregion(size * x, line_height * y + size + 4, size, size, plain_letter, halign = "center", font_weight = "bold")
-				elif (plain_letter in self._reveal_letters) and (plain_letter not in revealed_letters):
-					svg.textregion(size * x, line_height * y + size + 4, size, size, plain_letter, halign = "center")
-					revealed_letters.add(plain_letter)
+				cipher_layer.add(SVGRect.new(pos = Vector2D(size * x, line_height * y), extents = Vector2D(size, size)))
+				cipher_layer.add(SVGRect.new(pos = Vector2D(size * x, line_height * y + size), extents = Vector2D(size, size)))
+				svgc.text(cipher_layer, pos = Vector2D(size * x, line_height * y + yoffset), extents = Vector2D(size, size - yoffset), text = cipher_letter, halign = "center")
+				svgc.text(solution_layer, pos = Vector2D(size * x, line_height * y + size + yoffset), extents = Vector2D(size, size - yoffset), text = plain_letter, halign = "center", attribute = "bold")
+				if plain_letter in self._reveal_letters:
+					svgc.text(inference_layer, pos = Vector2D(size * x, line_height * y + size + yoffset), extents = Vector2D(size, size - yoffset), text = plain_letter, halign = "center")
+					if plain_letter not in revealed_letters:
+						svgc.text(initial_layer, pos = Vector2D(size * x, line_height * y + size + yoffset), extents = Vector2D(size, size - yoffset), text = plain_letter, halign = "center")
+						revealed_letters.add(plain_letter)
 
 		y += 1
 		half_height = size // 2
 		if self._crypto_solution is not None:
 			for (x, plain_letter) in enumerate(self._crypto_solution):
 				cipher_letter = self._key[plain_letter]
-				svg.rect(size * x, line_height * y + half_height, size, size, fillcolor = "f1c40f")
-				svg.rect(size * x, line_height * y + size + half_height, size, size)
-				svg.textregion(size * x, line_height * y + half_height + 4, size, size, cipher_letter, halign = "center")
-				if solution:
-					svg.textregion(size * x, line_height * y + size + half_height + 4, size, size, plain_letter, halign = "center", font_weight = "bold")
+				rect = final_ciphertext.add(SVGRect.new(pos = Vector2D(size * x, line_height * y + half_height), extents = Vector2D(size, size)))
+				rect.style["fill"] = "#f1c40f"
 
+				final_ciphertext.add(SVGRect.new(pos = Vector2D(size * x, line_height * y + size + half_height), extents = Vector2D(size, size)))
+				svgc.text(final_ciphertext, pos = Vector2D(size * x, line_height * y + half_height + yoffset), extents = Vector2D(size, size - yoffset), text = cipher_letter, halign = "center")
 
-		svg.autosize()
+				svgc.text(final_plaintext, pos = Vector2D(size * x, line_height * y + size + half_height + yoffset), extents = Vector2D(size, size - yoffset), text = plain_letter, halign = "center", attribute = "bold")
+
+		svgc.autosize(svg)
 		svg.writefile(output_filename)
-
 
 if __name__ == "__main__":
 	cp = CryptoPuzzle([ "THIS IS A", "SUPER SECRET", "MESSAGE" ], [ "alpha" ], "ERNSTL", crypto_solution = "TATA")

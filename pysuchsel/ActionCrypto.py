@@ -30,6 +30,4 @@ class ActionCrypto(BaseAction):
 		cp = CryptoPuzzle(plain_lines = plain_lines, alphabet_names = self._args.alphabet, reveal_letters = self._args.reveal, crypto_solution = self._args.solution_word)
 		if self._args.verbose >= 1:
 			cp.dump()
-		if self._args.solution:
-			cp.write_svg(self._args.solution, solution = True)
 		cp.write_svg(self._args.outfile)
