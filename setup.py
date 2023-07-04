@@ -6,7 +6,7 @@ with open("README.md") as f:
 setuptools.setup(
 	name = "pysuchsel",
 	packages = setuptools.find_packages(),
-	version = "0.0.1rc0",
+	version = "0.0.1",
 	license = "gpl-3.0",
 	description = "Native Python library to create and edit SVG documents",
 	long_description = long_description,
@@ -14,7 +14,7 @@ setuptools.setup(
 	author = "Johannes Bauer",
 	author_email = "joe@johannes-bauer.com",
 	url = "https://github.com/johndoe31415/pysuchsel",
-	download_url = "https://github.com/johndoe31415/pysuchsel/archive/v0.0.1rc0.tar.gz",
+	download_url = "https://github.com/johndoe31415/pysuchsel/archive/v0.0.1.tar.gz",
 	keywords = [ "puzzle", "crossword", "suchsel" ],
 	install_requires = [
 		"pysvgedit>=0.0.4",
