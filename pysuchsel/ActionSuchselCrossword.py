@@ -49,7 +49,7 @@ class ActionSuchselCrossword(BaseAction):
 					self._placed_words[next_id] = word
 					next_id += 1
 			else:
-				raise NotImplementedError(args.mode)
+				raise NotImplementedError(self._args.mode)
 			if not placed:
 				self._unplaced_words.append(word)
 		return len(self._unplaced_words) == 0

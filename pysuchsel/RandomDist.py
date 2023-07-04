@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 #
 #	RandomDist - Generate random values of given distribution
-#	Copyright (C) 2011-2013 Johannes Bauer
-#	
+#	Copyright (C) 2011-2023 Johannes Bauer
+#
 #	This file is part of pycommon.
 #
 #	pycommon is free software; you can redistribute it and/or modify
@@ -42,6 +42,7 @@ class RandomDist():
 		for (key, value) in self._values:
 			if randval < value:
 				return key
+		return None
 
 if __name__ == "__main__":
 	rdist = RandomDist({
@@ -50,7 +51,7 @@ if __name__ == "__main__":
 		"20":	20,
 		"60":	60,
 	})
-	
+
 	total = 300000
 	events = { }
 	for i in range(total):

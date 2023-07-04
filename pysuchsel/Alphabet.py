@@ -19,7 +19,6 @@
 #	Johannes Bauer <JohannesBauer@gmx.de>
 
 import json
-import string
 import pkgutil
 from .RandomDist import RandomDist
 

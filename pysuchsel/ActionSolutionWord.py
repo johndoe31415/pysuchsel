@@ -43,3 +43,4 @@ class ActionSolutionWord(BaseAction):
 				word_indent = " " * (indent - letter_index)
 				print("%2d %s%s" % (word_no, word_indent, word))
 		swp.write_svg(self._args.outfile)
+		return 0

@@ -19,7 +19,6 @@
 #	Johannes Bauer <JohannesBauer@gmx.de>
 
 import random
-import collections
 from pysvgedit import SVGDocument, SVGGroup, SVGRect, Vector2D, Convenience as svgc
 from .Exceptions import PuzzleNotSolvableException
 
